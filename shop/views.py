@@ -27,3 +27,6 @@ def details(request,id):
         'product':product
     }
     return render(request,'shop/details.html',context)
+
+def checkout(request):
+    return render(request,'shop/checkout.html')
