@@ -1,0 +1,129 @@
+{% extends 'shop/layout.html' %}
+
+{% block body %}
+  <div class="row">
+    <form class="col-md-12">
+      {% csrf_token %}
+      <div class="card card-sm">
+        <div class="card-body row no-gutters align-items-center">
+          <div class="col">
+            <input type="search" name="item_name" placeholder="Search For Products" class="form-control form-control-borderless">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-success" name="button">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="row">
+    {% for product in product_objects%}
+    <div class="col-md-3">
+      <div class="card">
+        <img class="card-img-top" src="{{product.image}}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title" id="nm{{product.id}}">{{product.title}}</h5>
+          <p class="card-text">${{product.price}}</p>
+          <a href="{% url 'details' product.id %}" class="btn btn-warning">View</a>
+          <button id="{{product.id}}" class="atc btn btn-warning">Add To Card</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="row">
+    <div class="col-md-3 offset-md-4">
+      <ul class='pagination'>
+        {% if product_objects.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{product_objects.previous_page_number}}">Previous</a>
+          </li>
+        {% endif %}
+
+        <li class="page-item active">
+          <a class="page-link" href="?page={{product_objects.number}}">Current</a>
+        </li>
+
+
+        {% if product_objects.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{product_objects.next_page_number}}">Next</a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+  <script type="text/javascript">
+    console.log('this is working');
+
+    if(localStorage.getItem('cart')==null){
+      var cart = {};
+
+    }
+    else{
+      cart=JSON.parse(localStorage.getItem('cart'));
+    }
+
+    $(document).on('click','.atc',function(){
+      console.log('this is clicked');
+      var item_id = this.id.toString();
+      console.log(item_id);
+
+        if(cart[item_id]!=undefined){
+          cart[item_id]=cart[item_id]+1
+        }
+        else{
+          cart[item_id]=1
+        }
+
+      console.log(cart);
+      localStorage.setItem('cart',JSON.stringify(cart));
+
+      document.getElementById('cart').innerHTML="cart("+Object.keys(cart).length+")";
+      console.log(Object.keys(cart).length)
+    });
+
+    // Enable Popover
+    // $(function() {
+    //   $('[data-toggle="popover"]').popover();
+    //   document.getElementById('cart').setAttribute('data-content','<h5>This is your cart</h5>')
+    // });
+
+    DisplayCart(cart);
+
+    function DisplayCart(cart){
+      var cartString = "";
+      cartString+="<h5>This is your cart</h5>";
+      var cartIndex = 1;
+      // for(var x in cart){
+      //   cartString += cartIndex;
+      //   console.log("value: "+cart[x])
+      //   var val="nm"+x;
+      //   console.log(val);
+      //   var title=document.getElementById(val).innerHTML;
+      //
+      //   cartString+=title + "Qty:" + cart[x];
+      //   cartIndex+=1;
+    // }
+
+        for(var x in cart){
+          cartString+= cartIndex;
+          if(document.getElementById("nm"+x)!=null){
+            cartString+=document.getElementById("nm"+x).innerHTML+" Qty: "+cart[x]+"<br>";
+            cartIndex+=1;
+          }
+        }
+
+      document.getElementById("cart").setAttribute('data-content',cartString);
+      $('[data-toggle="popover"]').popover();
+    }
+
+  </script>
+{% endblock %}

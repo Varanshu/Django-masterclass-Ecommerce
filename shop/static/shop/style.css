@@ -1,0 +1,16 @@
+body{
+}
+
+.card-title{
+  font-weight: 800;
+}
+
+.card-text{
+  color: green;
+  font-weight: bold;
+}
+
+.details_image{
+  max-width: 100%;
+  max-height: 100%;
+}
