@@ -24,7 +24,7 @@
         <img class="card-img-top" src="{{product.image}}" alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title" id="nm{{product.id}}">{{product.title}}</h5>
-          <p class="card-text">${{product.price}}</p>
+          <p class="card-text" id="price{{product.id}}">{{product.price}}</p>
           <a href="{% url 'details' product.id %}" class="btn btn-warning">View</a>
           <button id="{{product.id}}" class="atc btn btn-warning">Add To Card</button>
         </div>
@@ -79,12 +79,16 @@
         if(cart[item_id]!=undefined){
           quantity=cart[item_id][0]+1;
           cart[item_id][0] = quantity;
+          console.log(parseFloat(document.getElementById("price"+item_id).innerHTML));
+          cart[item_id][2] = cart[item_id][2] + parseFloat(document.getElementById("price"+item_id).innerHTML);
           // cart[item_id]=cart[item_id]+1
+
         }
         else{
           quantity = 1;
+          price = parseFloat(document.getElementById("price"+item_id).innerHTML);
           name = document.getElementById("nm"+item_id).innerHTML;
-          cart[item_id] = [quantity,name];
+          cart[item_id] = [quantity,name,price];
         }
 
       console.log(cart);
